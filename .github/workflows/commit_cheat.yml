@@ -2,6 +2,8 @@ name: Auto commit
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   auto_commit:
@@ -23,7 +25,7 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore(bot): auto commit"
 
       - name: GitHub Push
-        uses: ad-m/github-push-action@v0.8.0
+        uses: ad-m/github-push-action@v0.6.0
         with:
           force: true
           directory: "."
