@@ -1,10 +1,7 @@
 name: Auto commit
 
-'on':
+on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
 
 jobs:
   auto_commit:
@@ -12,42 +9,21 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2      
+      - uses: actions/checkout@v2
         with:
-         persist-credentials: false
-         fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Modify last update
         run: |
-          d=`date '+%Y-%m-%dT%H:%M:%SZ'`
-          echo $d > LAST_UPDATED
-          
-      - name: Commit changes
-        run: |
-          set -o pipefail
-          git config --global --add safe.directory /github/workspace
+          date '+%Y-%m-%dT%H:%M:%SZ' > LAST_UPDATED
           git config --local user.email "fakhri@student.unp.ac.id"
           git config --local user.name "fakhriaditiarahman"
-          git config --global --add safe.directory /github/workspace
           git add -A
+          git diff-index --quiet HEAD || git commit -m "chore(bot): auto commit"
 
-          arr[0]="chore(bot): 😂 auto commit"
-          arr[1]="chore(bot): 😱 auto commit"
-          arr[2]="chore(bot): 👿 auto commit"
-          arr[3]="chore(bot): 💩 auto commit"
-          arr[4]="chore(bot): 🙏 auto commit"
-          arr[5]="chore(bot): 🙈 auto commit"
-          arr[6]="chore(bot): 🐐 auto commit"
-          arr[7]="chore(bot): 🤖 auto commit"
-          arr[8]="chore(bot): 🟩 auto commit"
-          arr[9]="chore(bot): 👻 auto commit"
-
-          rand=$[$RANDOM % ${#arr[@]}]
-
-          git diff-index --quiet HEAD || git commit -m "${arr[$rand]}"
-          
       - name: GitHub Push
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.8.0
         with:
           force: true
           directory: "."
