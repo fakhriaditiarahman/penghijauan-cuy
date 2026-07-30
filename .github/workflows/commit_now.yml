@@ -22,6 +22,8 @@ on:
 
 jobs:
   auto_commit:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2      
