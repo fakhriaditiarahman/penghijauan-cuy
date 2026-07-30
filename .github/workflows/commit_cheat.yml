@@ -27,8 +27,8 @@ jobs:
         run: |
           set -o pipefail
           git config --global --add safe.directory /github/workspace
-          git config --local user.email "coderzakir44@gmail.com"
-          git config --local user.name "Coder Zakir"
+          git config --local user.email "fakhri@student.unp.ac.id"
+          git config --local user.name "fakhriaditiarahman"
           git config --global --add safe.directory /github/workspace
           git add -A
           
@@ -43,9 +43,9 @@ jobs:
           arr[8]="chore(bot): 🟩 auto commit"
           arr[9]="chore(bot): 👻 auto commit"
           
-          rand=$[$RANDOM % ${#arr[@]}]
-          
-          git commit -m "${arr[$rand]}"
+           rand=$[$RANDOM % ${#arr[@]}]
+           
+           git diff-index --quiet HEAD || git commit -m "${arr[$rand]}"
           
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
