@@ -1,4 +1,4 @@
-name: Auto commit
+name: Auto Commit Harian
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 * * * *'
 
 jobs:
-  auto_commit:
+  commit:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Modify last update
+      - name: Auto commit
         run: |
           date '+%Y-%m-%dT%H:%M:%SZ' > LAST_UPDATED
           git config --local user.email "fakhri@student.unp.ac.id"
@@ -25,7 +25,7 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore(bot): auto commit"
 
       - name: GitHub Push
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.8.0
         with:
           force: true
           directory: "."
