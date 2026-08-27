@@ -3,7 +3,7 @@ name: Auto Commit Harian
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/30 * * * *'
 
 jobs:
   commit:
@@ -16,7 +16,21 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
+      - name: Cek batas commit harian (50)
+        id: limit
+        run: |
+          TODAY=$(date -u '+%Y-%m-%d')
+          COUNT=$(git log --since="${TODAY}T00:00:00Z" --oneline | wc -l)
+          echo "Commit hari ini: $COUNT"
+          if [ "$COUNT" -ge 50 ]; then
+            echo "::set-output name=skip::true"
+            echo "Batas 50 commit harian tercapai, lewati."
+          else
+            echo "::set-output name=skip::false"
+          fi
+
       - name: Auto commit
+        if: steps.limit.outputs.skip != 'true'
         run: |
           date '+%Y-%m-%dT%H:%M:%SZ' > LAST_UPDATED
           git config --local user.email "fakhri@student.unp.ac.id"
@@ -25,6 +39,7 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore(bot): auto commit"
 
       - name: GitHub Push
+        if: steps.limit.outputs.skip != 'true'
         uses: ad-m/github-push-action@v0.8.0
         with:
           force: true
